@@ -19,7 +19,9 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(properties = {"property1=property1", "property2=property2"})
-@ActiveProfiles({"jpa", "embedded"})
+@ActiveProfiles({"jpa", "test"})
 @Slf4j
 public class SpringTest {
 
@@ -84,7 +86,7 @@ public class SpringTest {
 
     @Test
     @Order(3)
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager")
+    @Transactional
     void testJobRepositoryUpdate() {
         assertEquals(jobRepository.updateJobDescription("Singer", "Singer2"), 0);
     }

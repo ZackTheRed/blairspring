@@ -4,7 +4,6 @@ import com.blair.blairspring.exceptions.NotFoundException;
 import com.blair.blairspring.model.ibatisschema.Player;
 import com.blair.blairspring.repositories.ibatisschema.jpa.PlayerRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -27,7 +26,7 @@ public class PlayerService {
 
     private final TestService testService;
 
-    public PlayerService(@Qualifier("ibatisSchemaTransactionManager") PlatformTransactionManager transactionManager,
+    public PlayerService(PlatformTransactionManager transactionManager,
                          PlayerRepository playerRepository,
                          TestService testService) {
         this.playerRepository = playerRepository;
@@ -36,7 +35,7 @@ public class PlayerService {
         this.testService = testService;
     }
 
-    @Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation = Propagation.REQUIRES_NEW, transactionManager = "ibatisSchemaTransactionManager")
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED, propagation = Propagation.REQUIRES_NEW)
     public List<Player> findAll() {
         return playerRepository.findAll();
     }
@@ -54,7 +53,7 @@ public class PlayerService {
         return null;
     }
 
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", isolation = Isolation.REPEATABLE_READ)
+    @Transactional(isolation = Isolation.REPEATABLE_READ)
     public void transactionTest() {
         /*Collection<Player> allPlayers = playerRepository.findByBirthDateBetween(30, 40);
         log.info("all players 1st call: {}", allPlayers);
@@ -66,7 +65,7 @@ public class PlayerService {
         playerRepository.deleteById(newPlayer.getId());*/
     }
 
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public void repeatableReadTest() {
         List<Player> allPlayersStreamable = playerRepository.findAll();
         List<Player> allPlayers = allPlayersStreamable;

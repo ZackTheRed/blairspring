@@ -4,6 +4,7 @@ import com.blair.blairspring.util.ITestBean;
 import com.blair.blairspring.util.LazyBean;
 import com.blair.blairspring.util.SetterInjectedBean;
 import com.blair.blairspring.util.genericsbeans.GenericsBean;
+import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
@@ -12,13 +13,14 @@ import org.springframework.context.annotation.EnableAspectJAutoProxy;
 @EnableAspectJAutoProxy
 public class AppConfig {
 
-    @Bean
-    public SetterInjectedBean setterInjectedBean(GenericsBean<Integer> myGenericsBeans, ITestBean testBean, LazyBean lazyBean) {
-        SetterInjectedBean setterInjectedBean = new SetterInjectedBean();
-        setterInjectedBean.setMyGenericsBeans(myGenericsBeans);
-        setterInjectedBean.setTestBean(testBean);
-        setterInjectedBean.katiLazyBean(lazyBean);
-        return setterInjectedBean;
-    }
+    /*@Bean
+    public ServletRegistrationBean restServlet() {
+        DispatcherServlet dispatcherServlet = new DispatcherServlet();
+        AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+        applicationContext.register(ChildCtxConfig.class); ...
+        dispatcherServlet.setApplicationContext(applicationContext);
+        ServletRegistrationBean servletRegistrationBean = new ServletRegistrationBean(dispatcherServlet, "/child/*"); ...
+        return servletRegistrationBean;
+    }*/
 
 }

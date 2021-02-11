@@ -14,6 +14,7 @@ import java.util.List;
 @Profile("jpa")
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;
@@ -29,7 +30,6 @@ public class JobServiceImpl implements JobService {
     }
 
     @Override
-    @Transactional(noRollbackFor = RuntimeException.class)
     public Job create(Job job) {
         Job newJob = jobRepository.save(job);
         // throw new RuntimeException();

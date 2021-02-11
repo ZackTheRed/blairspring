@@ -29,7 +29,7 @@ public class TestService {
         throw new RuntimeException();
     }*/
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, transactionManager = "ibatisSchemaTransactionManager")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Player createWithoutException() {
         Player player = new Player();
         player.setFirstName("Ioannis");
@@ -38,7 +38,7 @@ public class TestService {
         return playerRepository.save(player);
     }
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW, transactionManager = "ibatisSchemaTransactionManager")
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Player update(Player player) {
         return playerRepository.save(player);
     }

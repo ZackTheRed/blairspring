@@ -21,13 +21,13 @@ import java.util.List;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-@Transactional(transactionManager = "ibatisSchemaTransactionManager")
+@Transactional
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final EmployeeRepository employeeRepository;
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public Employee findById(Long id) {
         log.info("findById - isActualTransactionActive: {}", TransactionSynchronizationManager.isActualTransactionActive());
         return employeeRepository.findById(id).orElseThrow(() -> new NotFoundException(Employee.class, id));
@@ -39,19 +39,19 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public Employee findByCompleteName(String firstName, String lastName) {
         return null;
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public List<Employee> findAll() {
         return employeeRepository.findAll();
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public Page<Employee> findAllPaged() {
         return null;
     }
@@ -67,25 +67,25 @@ public class EmployeeServiceImpl implements EmployeeService {
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public List<Employee> findBySalaryBetween(Long min, Long max) {
         return null;
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public List<Employee> findBySalaryLessThanEqualAndLastNameStartingWith(Long max, String startingLetter) {
         return null;
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public List<Employee> findByLastNameLike(String like) {
         return null;
     }
 
     @Override
-    @Transactional(transactionManager = "ibatisSchemaTransactionManager", readOnly = true)
+    @Transactional(readOnly = true)
     public List<Employee> findFirst5BySalaryGreaterThan(Long min) {
         return null;
     }
