@@ -1,5 +1,6 @@
 package com.blair.blairspring.model.userschema;
 
+import com.blair.blairspring.model.ibatisschema.AbstractEntity;
 import com.blair.blairspring.model.validation.AdminRegistration;
 import com.blair.blairspring.model.validation.UserRegistration;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -30,9 +31,8 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 @Data
 @XmlRootElement
-public class User implements UserDetails {
+public class User extends AbstractEntity implements UserDetails {
 
-    @Id
     @Column(name = "username", nullable = false, unique = true)
     @NotBlank(groups = {UserRegistration.class, AdminRegistration.class})
     @Size(min = 4, max = 25)
@@ -50,8 +50,8 @@ public class User implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
     @JoinTable(
             name = "user_roles",
-            joinColumns = @JoinColumn(name = "username"),
-            inverseJoinColumns = @JoinColumn(name = "role_name"))
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     @NotEmpty(groups = AdminRegistration.class)
     @JsonIgnoreProperties("users")
     private Set<Role> roles;

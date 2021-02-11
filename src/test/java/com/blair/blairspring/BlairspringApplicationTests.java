@@ -4,6 +4,7 @@ import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.util.TestComponent;
 import com.blair.blairspring.util.lookup.SingletonBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -16,6 +17,8 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,6 +44,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
@@ -104,9 +108,10 @@ class BlairspringApplicationTests {
     @Test
     void testPostJob() {
         HttpEntity<Job> request = new HttpEntity<>(new Job("Policeman"));
-        URI location = restTemplate.postForLocation("http://localhost:" + randomServerPort + "/jobs", request);
-        logger.info("location: {}", location);
-        assertThat(location, notNullValue());
+        assertThrows(DataAccessException.class, () -> {
+           URI location = restTemplate.postForLocation("http://localhost:" + randomServerPort + "/jobs", request);
+            logger.info("Location: {}", location);
+        });
     }
 
     @Test

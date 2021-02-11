@@ -1,7 +1,10 @@
 package com.blair.blairspring.model.userschema;
 
+import com.blair.blairspring.model.ibatisschema.AbstractEntity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -17,13 +20,10 @@ import java.util.Set;
 
 @Entity
 @Table(name = "roles")
-@NoArgsConstructor
-@AllArgsConstructor
-@Getter
-@Setter
-public class Role {
+@Data
+@EqualsAndHashCode(exclude = "users")
+public class Role extends AbstractEntity {
 
-    @Id
     @Column(name = "role_name", nullable = false, unique = true)
     private String roleName;
 
