@@ -3,10 +3,9 @@ package com.blair.blairspring.services.implementations.jpa;
 import com.blair.blairspring.model.ibatisschema.Employee;
 import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.repositories.ibatisschema.EmployeeRepository;
-import com.blair.blairspring.repositories.ibatisschema.JobRepository;
+import com.blair.blairspring.repositories.ibatisschema.jpa.JobRepository;
 import com.blair.blairspring.services.EmployeeService;
-import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -23,6 +22,7 @@ import java.util.List;
 
 @Profile("jpa")
 @Service
+@Slf4j
 public class EmployeeServiceImpl implements EmployeeService {
 
     private final PlatformTransactionManager manager;
@@ -82,6 +82,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         TransactionStatus status = manager.getTransaction(definition);
         Employee newEmployee = employeeRepository.save(employee);
         manager.commit(status);
+        // manager.rollback(status);
         return newEmployee;
     }
 
@@ -113,4 +114,10 @@ public class EmployeeServiceImpl implements EmployeeService {
     public List<Employee> findFirst5BySalaryGreaterThan(Long min) {
         return employeeRepository.findFirst5BySalaryGreaterThan(min);
     }
+
+    @Transactional(propagation = Propagation.NEVER)
+    public void transactionalMethod() {
+        log.info("Running EmployeeServiceImpl.transactionalMethod");
+    }
+
 }

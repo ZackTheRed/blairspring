@@ -34,6 +34,6 @@ public class HealthChecker implements HealthIndicator, ApplicationContextAware {
     }
 
     private boolean jobCheck(JobService jobService) {
-        return jobService.findAll().size() == 7;
+        return jobService != null;
     }
 }

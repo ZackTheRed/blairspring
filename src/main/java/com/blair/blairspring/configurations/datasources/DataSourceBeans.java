@@ -23,7 +23,7 @@ public class DataSourceBeans {
     public DataSource embeddedDataSource() {
         return new EmbeddedDatabaseBuilder()
                 .setType(EmbeddedDatabaseType.H2)
-                .addScript("classpath:sql/initialize-embedded.sql")
+                .addScript("classpath:sql/initialize_embedded-h2.sql")
                 .build();
     }
 

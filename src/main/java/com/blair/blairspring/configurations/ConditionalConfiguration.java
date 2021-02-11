@@ -1,22 +1,32 @@
 package com.blair.blairspring.configurations;
 
 import ch.qos.logback.classic.ViewStatusMessagesServlet;
-import com.blair.blairspring.util.TestBean;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import com.blair.blairspring.controllers.EmployeeController;
+import com.blair.blairspring.controllers.NonAnnotatedController;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.support.BeanDefinitionBuilder;
+import org.springframework.beans.factory.support.BeanDefinitionRegistry;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Profile;
-import org.springframework.context.annotation.Scope;
-import org.springframework.web.context.annotation.RequestScope;
 
 @Configuration
 // @ConditionalOnMissingClass("com.blair.blairspring.controllers.EmployeeController")
-@ConditionalOnClass(name = "com.blair.blairspring.controllers.EmployeeController")
+// @ConditionalOnClass(name = "com.blair.blairspring.controllers.EmployeeController")
+// @ConditionalOnClass(value = EmployeeController.class)
+@ConditionalOnBean(value = EmployeeController.class)
+@Slf4j
 public class ConditionalConfiguration {
+
+    private final String myString;
+
+    public ConditionalConfiguration(@Value("Dog") String myString) { // This is to demonstrate that no no-args constructor is necessary
+        this.myString = myString;
+    }
 
     @Bean
     public ServletRegistrationBean viewStatusMessagesServlet() {
@@ -25,18 +35,26 @@ public class ConditionalConfiguration {
         return bean;
     }
 
-    @Bean(initMethod = "myInit", destroyMethod = "myDestroy")
-    //@RequestScope
-    @Lazy
-    @Primary
-    public TestBean testBean() {
-        return new TestBean();
+    @Bean("/nonAnnotatedController")
+    public NonAnnotatedController nonAnnotatedController() {
+        NonAnnotatedController nonAnnotatedController = new NonAnnotatedController();
+        nonAnnotatedController.setSupportedMethods("GET");
+        return nonAnnotatedController;
     }
 
     @Bean
-    @Lazy
-    public TestBean testBean2() {
-        return new TestBean();
+    public static BeanFactoryPostProcessor beanFactoryPostProcessor() {
+        return factory -> {
+            var registry = (BeanDefinitionRegistry) factory;
+            registry.registerBeanDefinition("myBean", BeanDefinitionBuilder.genericBeanDefinition(String.class)
+                    .addConstructorArgValue("This is myBean")
+                    .getBeanDefinition()
+            );
+            BeanDefinition primaryTestBeanDefinition = factory.getBeanDefinition("primaryTestBean");
+            primaryTestBeanDefinition.setPrimary(false);
+            BeanDefinition thirdTestBeanDefinition = factory.getBeanDefinition("thirdTestBean");
+            thirdTestBeanDefinition.setPrimary(true);
+        };
     }
 
 }

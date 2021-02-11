@@ -4,7 +4,11 @@ import com.blair.blairspring.exceptions.NotFoundException;
 import com.blair.blairspring.hateoas.JobModelAssembler;
 import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.services.JobService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
@@ -21,6 +25,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,7 +34,11 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("jobs")
+@Slf4j
 public class JobController {
+
+    @Autowired
+    ConfigurableApplicationContext context;
 
     private final JobService jobService;
     private final JobModelAssembler assembler;
@@ -43,6 +52,9 @@ public class JobController {
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public CollectionModel<EntityModel<Job>> getAllJobs() {
+        ConfigurableEnvironment environment = context.getEnvironment();
+        environment.getPropertySources().addFirst(new MapPropertySource("My_MAP", Map.of("blairProperty", "awesome")));
+        log.info("Added blairProperty");
         List<EntityModel<Job>> allJobs = jobService.findAll().stream()
                 .map(assembler::toModel)
                 .collect(Collectors.toList());
@@ -58,7 +70,7 @@ public class JobController {
     }
 
     @PostMapping
-    public ResponseEntity<?> createJob(@RequestBody Job job) {
+    public ResponseEntity<EntityModel<Job>> createJob(@RequestBody Job job) {
         EntityModel<Job> entityModel = assembler.toModel(jobService.create(job));
 
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())

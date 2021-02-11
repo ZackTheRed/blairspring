@@ -1,7 +1,7 @@
 package com.blair.blairspring.actuator;
 
 import com.blair.blairspring.repositories.ibatisschema.EmployeeRepository;
-import com.blair.blairspring.repositories.ibatisschema.JobRepository;
+import com.blair.blairspring.repositories.ibatisschema.jpa.JobRepository;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.actuate.endpoint.SecurityContext;
@@ -13,7 +13,6 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Component;
 
-import java.security.Principal;
 import java.util.LinkedHashMap;
 import java.util.Map;
 

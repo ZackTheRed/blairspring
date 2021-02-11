@@ -18,4 +18,5 @@ public class JobModelAssembler implements RepresentationModelAssembler<Job, Enti
                 linkTo(methodOn(JobController.class).getJobByID(job.getId())).withSelfRel(),
                 linkTo(methodOn(JobController.class).getAllJobs()).withRel("jobs"));
     }
+
 }

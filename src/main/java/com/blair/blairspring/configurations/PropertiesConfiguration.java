@@ -5,6 +5,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+
+import java.util.List;
 
 @Configuration
 @PropertySource("classpath:actuator.properties")
@@ -14,10 +19,26 @@ public class PropertiesConfiguration {
     @Value("${management.endpoint.shutdown.enabled}")
     private String shutdownEnabled;
 
+    @Value("#{'kati'.equals('kati')}")
+    private Boolean spelProperty;
+
+    @Value("${property1}")
+    private String configurerProperty;
+
     @Bean
-    public String stringBean() {
+    public List<?> testingProperties() {
         log.info("Test property value: {}", shutdownEnabled);
-        return shutdownEnabled;
+        log.info("SpelProperty: {}", spelProperty);
+        log.info("ConfigurerProperty: {}", configurerProperty);
+        return List.of(shutdownEnabled, spelProperty, configurerProperty);
+    }
+
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer properties() {
+        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+        Resource resource = new ClassPathResource("propertySourcesPlaceholderConfigurer.properties");
+        configurer.setLocation(resource);
+        return configurer;
     }
 
 }

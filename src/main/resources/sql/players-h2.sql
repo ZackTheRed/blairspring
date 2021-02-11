@@ -1,0 +1,11 @@
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (1,'José','Sá',2,'1993-01-17');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (2,'Youssef','El-Arabi',2,'1987-02-03');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (3,'Uffe','Bech',3,'1993-01-13');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (4,'Facundo','Sánchez',3,'1990-03-07');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (5,'Ionuț','Nedelcearu',1,'1996-04-25');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (6,'Levi','García',1,'1997-11-20');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (7,'Marko','Livaja',1,'1993-08-26');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (8,'Yann','M''Vila',2,'1990-06-29');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (9,'Mathieu','Valbuena',2,'1984-09-28');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (10,'Ferenc','Puskás',NULL,'1927-04-01');
+INSERT INTO `players` (`id`,`first_name`,`last_name`,`team_id`,`birth_date`) VALUES (11,'Aitor','Cantalapiedra',3,'1996-02-10');

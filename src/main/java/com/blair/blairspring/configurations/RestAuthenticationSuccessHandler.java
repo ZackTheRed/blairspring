@@ -1,5 +1,6 @@
 package com.blair.blairspring.configurations;
 
+import lombok.Setter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
@@ -12,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Component
+@Setter
 public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
     private RequestCache requestCache = new HttpSessionRequestCache();
@@ -35,10 +37,6 @@ public class RestAuthenticationSuccessHandler extends SimpleUrlAuthenticationSuc
             return;
         }
         clearAuthenticationAttributes(request);
-    }
-
-    public void setRequestCache(RequestCache requestCache) {
-        this.requestCache = requestCache;
     }
 
 }

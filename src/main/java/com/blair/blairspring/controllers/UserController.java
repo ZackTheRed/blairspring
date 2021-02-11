@@ -2,16 +2,17 @@ package com.blair.blairspring.controllers;
 
 import com.blair.blairspring.hateoas.UserModelAssembler;
 import com.blair.blairspring.model.userschema.User;
-import com.blair.blairspring.repositories.userschema.RoleRepository;
-import com.blair.blairspring.repositories.userschema.UserRepository;
+import com.blair.blairspring.model.validation.AdminRegistration;
 import com.blair.blairspring.services.UserService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +24,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.security.RolesAllowed;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -32,6 +32,7 @@ import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 @RestController
 @RequestMapping("users")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
 
     private final UserService userService;
@@ -55,9 +56,12 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<?> registerUser(@RequestBody User user) {
+    @RolesAllowed("ROLE_ADMIN")
+    public ResponseEntity<?> registerUser(@Validated(AdminRegistration.class) @RequestBody User user) {
+        // log.info("BindingResult: {}", bindingResult);
+        log.info("User: {}", user);
         EntityModel<User> entityModel = assembler.toModel(userService.registerUser(user));
-
+        // throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT, "testing");
         return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
                 .body(entityModel);
     }
