@@ -25,7 +25,7 @@ import java.util.Properties;
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.blair.blairspring.repositories.userschema",
-        entityManagerFactoryRef = "userSchemaEntityManager")
+        entityManagerFactoryRef = "userSchemaEntityManagerFactoryBean")
 public class UserDataSourceConfiguration {
 
     @Autowired
@@ -53,17 +53,15 @@ public class UserDataSourceConfiguration {
 
     @Bean
     @Primary
-    public EntityManagerFactory userSchemaEntityManager() throws SQLException {
+    public LocalContainerEntityManagerFactoryBean userSchemaEntityManagerFactoryBean() throws SQLException {
         LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
         factoryBean.setJtaDataSource(userSchemaDatasource());
         factoryBean.setPackagesToScan("com.blair.blairspring.model.userschema");
 
         Properties jpaProperties = new Properties();
         jpaProperties.put("hibernate.current_session_context_class", "jta");
-
-        jpaProperties.put("hibernate.transaction.manager_lookup_class",
-                "com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup");
-
+        jpaProperties.put("hibernate.transaction.factory_class", "com.atomikos.icatch.jta.hibernate3.AtomikosJTATransactionFactory");
+        jpaProperties.put("hibernate.transaction.manager_lookup_class", "com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup");
         jpaProperties.put("hibernate.hbm2ddl.auto", "none");
         jpaProperties.put("hibernate.format_sql", "true");
         jpaProperties.put("hibernate.dialect.storage_engine", "innodb");
@@ -76,7 +74,7 @@ public class UserDataSourceConfiguration {
         factoryBean.setJpaVendorAdapter(vendorAdapter);
 
         factoryBean.afterPropertiesSet();
-        return factoryBean.getObject();
+        return factoryBean;
     }
 
     /*@Primary
