@@ -16,8 +16,8 @@ import java.util.List;
 @Profile("jpa")
 @Service
 @RequiredArgsConstructor
+@Transactional
 @Slf4j
-@Transactional(transactionManager = "ibatisSchemaTransactionManager")
 public class JobServiceImpl implements JobService {
 
     private final JobRepository jobRepository;

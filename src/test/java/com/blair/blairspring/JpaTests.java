@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-@ActiveProfiles({"test", "jpa", "embedded"})
+@ActiveProfiles({"test", "jpa"})
 @SqlGroup({
         @Sql(scripts = {"classpath:sql/nationalities-h2.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
         @Sql(scripts = {"classpath:sql/teams-h2.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),

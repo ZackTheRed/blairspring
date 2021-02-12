@@ -4,7 +4,7 @@ import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.util.TestComponent;
 import com.blair.blairspring.util.lookup.SingletonBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.h2.jdbc.JdbcSQLIntegrityConstraintViolationException;
+import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -17,14 +17,10 @@ import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.web.server.LocalServerPort;
 import org.springframework.context.ApplicationContext;
-import org.springframework.dao.DataAccessException;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.test.context.ActiveProfiles;
@@ -34,12 +30,10 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
@@ -50,7 +44,7 @@ import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Transactional
-@ActiveProfiles({"jpa", "embedded"})
+@ActiveProfiles({"jpa", "test"})
 @TestPropertySource(properties = {"name=Kostas", "age=50"}, locations = "classpath:actuator.properties")
 class BlairspringApplicationTests {
 
@@ -108,10 +102,9 @@ class BlairspringApplicationTests {
     @Test
     void testPostJob() {
         HttpEntity<Job> request = new HttpEntity<>(new Job("Policeman"));
-        assertThrows(DataAccessException.class, () -> {
-           URI location = restTemplate.postForLocation("http://localhost:" + randomServerPort + "/jobs", request);
-            logger.info("Location: {}", location);
-        });
+
+        assertThrows(ConstraintViolationException.class,
+                () -> restTemplate.postForLocation("http://localhost:" + randomServerPort + "/jobs", request));
     }
 
     @Test

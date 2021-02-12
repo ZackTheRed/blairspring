@@ -1,6 +1,8 @@
 package com.blair.blairspring.configurations.datasources;
 
+import com.atomikos.jdbc.AtomikosDataSourceBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import com.mysql.cj.jdbc.MysqlXADataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,24 +15,71 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 @Configuration
 @EnableJpaRepositories(
         basePackages = "com.blair.blairspring.repositories.userschema",
-        entityManagerFactoryRef = "userSchemaEntityManager",
-        transactionManagerRef = "userSchemaTransactionManager")
-@EnableTransactionManagement
+        entityManagerFactoryRef = "userSchemaEntityManagerFactoryBean")
 public class UserDataSourceConfiguration {
 
     @Autowired
     private Environment env;
 
+    @Bean(initMethod = "init", destroyMethod = "close")
     @Primary
+    public AtomikosDataSourceBean userSchemaDatasource() throws SQLException {
+        final AtomikosDataSourceBean atomikosDataSource = new AtomikosDataSourceBean();
+        final Properties datasourceProperties = atomikosDataSource.getXaProperties();
+
+        atomikosDataSource.setXaDataSourceClassName("com.mysql.cj.jdbc.MysqlXADataSource");
+        atomikosDataSource.setUniqueResourceName("userSchemaDatasource");
+        atomikosDataSource.setTestQuery("SELECT COUNT(id) FROM users");
+        atomikosDataSource.setPoolSize(10);
+        datasourceProperties.setProperty("user", env.getProperty("spring.user-schema-datasource.username"));
+        datasourceProperties.setProperty("password", env.getProperty("spring.user-schema-datasource.password"));
+        datasourceProperties.setProperty("serverName", "localhost");
+        datasourceProperties.setProperty("port", "3306");
+        datasourceProperties.setProperty("databaseName", "user_schema");
+        datasourceProperties.setProperty("pinGlobalTxToPhysicalConnection", "true");
+
+        return atomikosDataSource;
+    }
+
     @Bean
-    public DataSource userSchemaDataSource() {
+    @Primary
+    public LocalContainerEntityManagerFactoryBean userSchemaEntityManagerFactoryBean() throws SQLException {
+        LocalContainerEntityManagerFactoryBean factoryBean = new LocalContainerEntityManagerFactoryBean();
+        factoryBean.setJtaDataSource(userSchemaDatasource());
+        factoryBean.setPackagesToScan("com.blair.blairspring.model.userschema");
+
+        Properties jpaProperties = new Properties();
+        jpaProperties.put("hibernate.current_session_context_class", "jta");
+        jpaProperties.put("hibernate.transaction.factory_class", "com.atomikos.icatch.jta.hibernate3.AtomikosJTATransactionFactory");
+        jpaProperties.put("hibernate.transaction.manager_lookup_class", "com.atomikos.icatch.jta.hibernate3.TransactionManagerLookup");
+        jpaProperties.put("hibernate.hbm2ddl.auto", "none");
+        jpaProperties.put("hibernate.format_sql", "true");
+        jpaProperties.put("hibernate.dialect.storage_engine", "innodb");
+
+        factoryBean.setJpaProperties(jpaProperties);
+
+        HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
+        vendorAdapter.setDatabasePlatform("org.hibernate.dialect.MySQL5Dialect");
+        vendorAdapter.setShowSql(true);
+        factoryBean.setJpaVendorAdapter(vendorAdapter);
+
+        factoryBean.afterPropertiesSet();
+        return factoryBean;
+    }
+
+    /*@Primary
+    @Bean*/
+    /*public DataSource userSchemaDataSource() {
         ComboPooledDataSource cpds = new ComboPooledDataSource();
         cpds.setJdbcUrl(env.getProperty("spring.user-schema-datasource.url"));
         cpds.setUser(env.getProperty("spring.user-schema-datasource.username"));
@@ -43,9 +92,9 @@ public class UserDataSourceConfiguration {
         cpds.setMaxStatements(100);
 
         return cpds;
-    }
+    }*/
 
-    @Primary
+    /*@Primary
     @Bean
     public LocalContainerEntityManagerFactoryBean userSchemaEntityManager() {
         LocalContainerEntityManagerFactoryBean em = new LocalContainerEntityManagerFactoryBean();
@@ -59,14 +108,14 @@ public class UserDataSourceConfiguration {
         properties.put("hibernate.show_sql", env.getProperty("spring.jpa.properties.hibernate.show_sql"));
         em.setJpaPropertyMap(properties);
         return em;
-    }
+    }*/
 
-    @Primary
+    /*@Primary
     @Bean
     public PlatformTransactionManager userSchemaTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(userSchemaEntityManager().getObject());
         return transactionManager;
-    }
+    }*/
 
 }
