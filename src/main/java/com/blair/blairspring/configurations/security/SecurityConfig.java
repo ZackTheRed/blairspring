@@ -2,12 +2,15 @@ package com.blair.blairspring.configurations.security;
 
 import com.blair.blairspring.configurations.RestAuthenticationSuccessHandler;
 import com.blair.blairspring.services.UserService;
+import com.blair.blairspring.util.jwt.JwtRequestFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
@@ -19,7 +22,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.access.AccessDeniedHandler;
+import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -33,6 +38,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
     private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
+    private final JwtRequestFilter jwtRequestFilter;
 
     private final SimpleUrlAuthenticationFailureHandler authenticationFailureHandler = new SimpleUrlAuthenticationFailureHandler();
 
@@ -43,6 +49,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final AuthenticationEntryPoint restAuthenticationEntryPoint = (httpServletRequest, httpServletResponse, e) ->
             httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
+
+    @Override
+    @Bean
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -61,31 +73,24 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors()
                 .and()
-                //.exceptionHandling()
                 //.accessDeniedHandler(accessDeniedHandler)
-                //.authenticationEntryPoint(restAuthenticationEntryPoint)
-
                 .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
                 .mvcMatchers("/", "/home").permitAll()
-                .mvcMatchers(HttpMethod.POST, "/users").permitAll()
+                .mvcMatchers(HttpMethod.POST, "/users/**").permitAll()
                 .mvcMatchers("/players/**").authenticated()
                 .mvcMatchers("/test/**").permitAll()
-                .mvcMatchers("/h2-console/**").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated()
                 .and()
-                .formLogin()
+                .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
                 //.loginProcessingUrl("/login")
                 //.successHandler(authenticationSuccessHandler)
                 //.failureHandler(authenticationFailureHandler)
-                .and()
-                .httpBasic()
-                .and()
-                .logout();
 
         http.headers().frameOptions().disable();
-        // http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
     @Bean

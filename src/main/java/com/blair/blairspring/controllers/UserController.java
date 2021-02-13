@@ -4,14 +4,21 @@ import com.blair.blairspring.hateoas.UserModelAssembler;
 import com.blair.blairspring.model.userschema.User;
 import com.blair.blairspring.model.validation.AdminRegistration;
 import com.blair.blairspring.services.UserService;
+import com.blair.blairspring.util.jwt.AuthenticationRequest;
+import com.blair.blairspring.util.jwt.AuthenticationResponse;
+import com.blair.blairspring.util.jwt.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,6 +44,9 @@ public class UserController {
 
     private final UserService userService;
     private final UserModelAssembler assembler;
+    private final AuthenticationManager authenticationManager;
+    private final UserDetailsService userDetailsService;
+    private final JwtUtil jwtUtil;
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
@@ -71,6 +81,23 @@ public class UserController {
     public ResponseEntity<?> deleteUser(@PathVariable String username) {
         userService.deleteByUsername(username);
         return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping(value = "/authenticate")
+    public ResponseEntity<?> createAuthenticationToken(@RequestBody AuthenticationRequest authenticationRequest) throws Exception {
+
+        try {
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(authenticationRequest.getUsername(), authenticationRequest.getPassword())
+            );
+        } catch (BadCredentialsException e) {
+            throw new Exception("Incorrect username or password", e);
+        }
+
+        final UserDetails userDetails = userDetailsService.loadUserByUsername(authenticationRequest.getUsername());
+        final String jwt = jwtUtil.generateToken(userDetails);
+
+        return ResponseEntity.ok(new AuthenticationResponse(jwt));
     }
 
 }

@@ -21,6 +21,7 @@ import java.util.Set;
 @Table(name = "roles")
 @Data
 @EqualsAndHashCode(exclude="users", callSuper = false)
+@ToString(exclude = "users")
 public class Role extends AbstractEntity {
 
     @Column(name = "role_name", nullable = false, unique = true)
