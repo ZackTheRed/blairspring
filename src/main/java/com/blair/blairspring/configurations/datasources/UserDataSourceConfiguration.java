@@ -39,10 +39,10 @@ public class UserDataSourceConfiguration {
 
         atomikosDataSource.setXaDataSourceClassName("com.mysql.cj.jdbc.MysqlXADataSource");
         atomikosDataSource.setUniqueResourceName("userSchemaDatasource");
-        atomikosDataSource.setTestQuery("SELECT COUNT(id) FROM users");
+        // atomikosDataSource.setTestQuery("SELECT COUNT(id) FROM users");
         atomikosDataSource.setPoolSize(10);
-        datasourceProperties.setProperty("user", env.getProperty("spring.user-schema-datasource.username"));
-        datasourceProperties.setProperty("password", env.getProperty("spring.user-schema-datasource.password"));
+        datasourceProperties.setProperty("user", env.getProperty("user_schema.datasource.username"));
+        datasourceProperties.setProperty("password", env.getProperty("user_schema.datasource.password"));
         datasourceProperties.setProperty("serverName", "localhost");
         datasourceProperties.setProperty("port", "3306");
         datasourceProperties.setProperty("databaseName", "user_schema");

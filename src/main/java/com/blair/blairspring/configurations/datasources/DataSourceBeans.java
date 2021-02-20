@@ -33,10 +33,10 @@ public class DataSourceBeans {
 
         atomikosDataSource.setXaDataSourceClassName("com.mysql.cj.jdbc.MysqlXADataSource");
         atomikosDataSource.setUniqueResourceName("applicationSchemaDatasource");
-        atomikosDataSource.setTestQuery("SELECT COUNT(id) FROM teams");
+        // atomikosDataSource.setTestQuery("SELECT COUNT(id) FROM teams");
         atomikosDataSource.setPoolSize(10);
-        datasourceProperties.setProperty("user", env.getProperty("spring.datasource.username"));
-        datasourceProperties.setProperty("password", env.getProperty("spring.datasource.password"));
+        datasourceProperties.setProperty("user", env.getProperty("ibatistestdb.datasource.username"));
+        datasourceProperties.setProperty("password", env.getProperty("ibatistestdb.datasource.password"));
         datasourceProperties.setProperty("serverName", "localhost");
         datasourceProperties.setProperty("port", "3306");
         datasourceProperties.setProperty("databaseName", "ibatistestdb");

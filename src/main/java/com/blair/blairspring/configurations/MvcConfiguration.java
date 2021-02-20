@@ -18,7 +18,6 @@ import java.util.List;
 public class MvcConfiguration implements WebMvcConfigurer {
 
     private final ServletContext servletContext;
-
     private final ObjectMapper objectMapper;
 
     public MvcConfiguration(ServletContext servletContext, ObjectMapper objectMapper) {
