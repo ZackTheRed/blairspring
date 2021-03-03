@@ -1,0 +1,10 @@
+{
+  "properties": [
+    {
+      "name": "lilimpakis.firstName",
+      "type": "java.lang.String",
+      "description":
+      "Yours truly first name."
+    }
+  ]
+}

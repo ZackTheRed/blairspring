@@ -1,6 +1,6 @@
 package com.blair.blairspring.controllers;
 
-import com.blair.blairspring.hateoas.UserModelAssembler;
+import com.blair.blairspring.hateoas.assemblers.UserModelAssembler;
 import com.blair.blairspring.model.userschema.User;
 import com.blair.blairspring.model.validation.AdminRegistration;
 import com.blair.blairspring.services.UserService;

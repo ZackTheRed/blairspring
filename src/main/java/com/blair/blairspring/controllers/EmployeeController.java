@@ -1,6 +1,7 @@
 package com.blair.blairspring.controllers;
 
-import com.blair.blairspring.hateoas.EmployeeModelAssembler;
+import com.blair.blairspring.hateoas.assemblers.EmployeeModelAssembler;
+import com.blair.blairspring.hateoas.entitymodels.EmployeeModel;
 import com.blair.blairspring.model.ibatisschema.Employee;
 import com.blair.blairspring.services.EmployeeService;
 import lombok.RequiredArgsConstructor;
@@ -9,7 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.data.domain.Page;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,11 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("employees")
@@ -41,19 +38,18 @@ public class EmployeeController {
 
 
     @GetMapping("fullName")
-    public ResponseEntity<Employee> getByFullname() {
+    public ResponseEntity<Employee> getByFullName() {
         return ResponseEntity.ok(this.employeeService.findByCompleteName("Ioannis", "Lilimpakis"));
     }
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Employee>> getAllEmployees() {
+    public ResponseEntity<CollectionModel<EmployeeModel>> getAllEmployees() {
         log.info("Blair property value: {}", context.getEnvironment().getProperty("blairProperty"));
-        List<EntityModel<Employee>> allEmployees = employeeService.findAll().stream()
-                .map((assembler::toModel))
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(allEmployees, linkTo(methodOn(EmployeeController.class).getAllEmployees()).withSelfRel());
+        return Optional.of(employeeService.findAll())
+                .map(assembler::toCollectionModel)
+                .map(ResponseEntity::ok)
+                .get();
     }
 
     @GetMapping("paged")
@@ -63,13 +59,16 @@ public class EmployeeController {
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Employee> getEmployeeById(@PathVariable Long id) {
-        return assembler.toModel(employeeService.findById(id));
+    public ResponseEntity<EmployeeModel> getEmployeeById(@PathVariable Long id) {
+        return ResponseEntity.ok(assembler.toModel(employeeService.findById(id)));
     }
 
     @PostMapping
-    public ResponseEntity<Employee> create(@RequestBody Employee employee) {
-        return new ResponseEntity(employeeService.create(employee), HttpStatus.CREATED);
+    public ResponseEntity<EmployeeModel> create(@RequestBody Employee employee) {
+        return Optional.of(employeeService.create(employee))
+                .map(assembler::toModel)
+                .map(model -> ResponseEntity.created(model.getRequiredLink(IanaLinkRelations.SELF).toUri()).body(model))
+                .orElse(ResponseEntity.badRequest().build());
     }
 
     @DeleteMapping("/{id}")

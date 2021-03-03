@@ -1,4 +1,4 @@
-package com.blair.blairspring.hateoas;
+package com.blair.blairspring.hateoas.assemblers;
 
 import com.blair.blairspring.controllers.UserController;
 import com.blair.blairspring.model.userschema.User;

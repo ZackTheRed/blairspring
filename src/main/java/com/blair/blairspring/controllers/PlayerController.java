@@ -1,6 +1,6 @@
 package com.blair.blairspring.controllers;
 
-import com.blair.blairspring.hateoas.PlayerModelAssembler;
+import com.blair.blairspring.hateoas.assemblers.PlayerModelAssembler;
 import com.blair.blairspring.model.ibatisschema.Player;
 import com.blair.blairspring.services.implementations.jpa.PlayerService;
 import com.blair.blairspring.services.implementations.jpa.TestService;

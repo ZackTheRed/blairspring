@@ -1,7 +1,8 @@
 package com.blair.blairspring.controllers;
 
 import com.blair.blairspring.exceptions.NotFoundException;
-import com.blair.blairspring.hateoas.JobModelAssembler;
+import com.blair.blairspring.hateoas.assemblers.JobModelAssembler;
+import com.blair.blairspring.hateoas.entitymodels.JobModel;
 import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.services.JobService;
 import lombok.extern.slf4j.Slf4j;
@@ -10,7 +11,6 @@ import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.core.env.ConfigurableEnvironment;
 import org.springframework.core.env.MapPropertySource;
 import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,13 +24,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("jobs")
@@ -51,40 +46,41 @@ public class JobController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public CollectionModel<EntityModel<Job>> getAllJobs() {
+    public ResponseEntity<CollectionModel<JobModel>> getAllJobs() {
         ConfigurableEnvironment environment = context.getEnvironment();
         environment.getPropertySources().addFirst(new MapPropertySource("My_MAP", Map.of("blairProperty", "awesome")));
         log.info("Added blairProperty");
-        List<EntityModel<Job>> allJobs = jobService.findAll().stream()
-                .map(assembler::toModel)
-                .collect(Collectors.toList());
-
-        return CollectionModel.of(allJobs, linkTo(methodOn(JobController.class).getAllJobs()).withSelfRel());
+        return Optional.of(jobService.findAll())
+                .map(assembler::toCollectionModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Job> getJobByID(@PathVariable Long id) {
-        Job foundJob = jobService.findById(id);
-        return assembler.toModel(foundJob);
+    public ResponseEntity<JobModel> getJobByID(@PathVariable Long id) {
+        return Optional.of(jobService.findById(id))
+                .map(assembler::toModel)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping
-    public ResponseEntity<EntityModel<Job>> createJob(@RequestBody Job job) {
-        EntityModel<Job> entityModel = assembler.toModel(jobService.create(job));
+    public ResponseEntity<JobModel> createJob(@RequestBody Job job) {
+        JobModel jobModel = assembler.toModel(jobService.create(job));
 
-        return ResponseEntity.created(entityModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
-                .body(entityModel);
+        return ResponseEntity.created(jobModel.getRequiredLink(IanaLinkRelations.SELF).toUri())
+                .body(jobModel);
     }
 
     @PutMapping("/{id}")
-    public EntityModel<Job> updateJob(@PathVariable Long id, @RequestBody Job job) {
+    public ResponseEntity<JobModel> updateJob(@PathVariable Long id, @RequestBody Job job) {
         Job updatedJob = Optional.ofNullable(jobService.findById(id)).map(currentJob -> {
             currentJob.setDescription(job.getDescription());
             return currentJob;
         }).orElseThrow(() -> new NotFoundException(Job.class, id));
 
-        return assembler.toModel(updatedJob);
+        return ResponseEntity.ok(assembler.toModel(updatedJob));
     }
 
     @DeleteMapping("/{id}")
