@@ -12,4 +12,5 @@ public class CustomListener implements ApplicationListener<CustomEvent> {
     public void onApplicationEvent(CustomEvent customEvent) {
         log.info("Custom event: {}", customEvent);
     }
+
 }

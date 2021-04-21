@@ -2,7 +2,6 @@ package com.blair.blairspring.services.implementations.jdbc;
 
 import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.repositories.ibatisschema.jdbc.JobRepositoryJdbc;
-import com.blair.blairspring.services.EmployeeService;
 import com.blair.blairspring.services.JobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,7 +20,6 @@ import java.util.List;
 public class JobServiceImpl implements JobService {
 
     private final JobRepositoryJdbc jobRepositoryJdbc;
-    private final EmployeeService employeeService;
 
     @Override
     public Job findById(Long id) {

@@ -1,12 +1,10 @@
 package com.blair.blairspring.controllers;
 
-import com.blair.blairspring.exceptions.TestException;
 import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.model.userschema.User;
 import com.blair.blairspring.util.ITestBean;
 import com.blair.blairspring.util.LazyBean;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpStatus;
@@ -15,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -37,24 +34,14 @@ import java.util.Map;
 @Slf4j
 public class TestController {
 
-    private final ApplicationContext applicationContext;
-
     private final LazyBean lazyBean;
 
     private final ITestBean testBean;
     private final List<ITestBean> testBeans;
 
-    /*public TestController(ApplicationContext applicationContext, @Lazy LazyBean lazyBean, ITestBean testBean) {
-        this.applicationContext = applicationContext;
-        this.lazyBean = lazyBean;
-        this.testBean = testBean;
-    }*/
-
-    public TestController(ApplicationContext applicationContext,
-                          @Lazy LazyBean lazyBean,
+    public TestController(@Lazy LazyBean lazyBean,
                           ITestBean testBean,
                           List<ITestBean> testBeans) {
-        this.applicationContext = applicationContext;
         this.lazyBean = lazyBean;
         this.testBean = testBean;
         this.testBeans = testBeans;

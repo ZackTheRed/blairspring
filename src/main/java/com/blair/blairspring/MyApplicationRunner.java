@@ -8,8 +8,10 @@ import org.apache.camel.ProducerTemplate;
 import org.apache.camel.support.DefaultExchange;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
+@Profile("prod")
 @Component
 @Slf4j
 @RequiredArgsConstructor

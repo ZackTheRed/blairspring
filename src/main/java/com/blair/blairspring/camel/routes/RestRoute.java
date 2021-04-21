@@ -1,11 +1,8 @@
 package com.blair.blairspring.camel.routes;
 
-import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.util.jwt.AuthenticationRequest;
-import com.blair.blairspring.util.jwt.AuthenticationResponse;
 import org.apache.camel.LoggingLevel;
 import org.apache.camel.builder.RouteBuilder;
-import org.apache.camel.component.jackson.JacksonDataFormat;
 import org.apache.camel.model.rest.RestBindingMode;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Component;

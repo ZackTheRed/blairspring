@@ -1,7 +1,6 @@
 package com.blair.blairspring.configurations;
 
 import com.blair.blairspring.interceptors.TestInterceptor;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
@@ -10,20 +9,13 @@ import org.springframework.http.converter.json.MappingJackson2HttpMessageConvert
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import static org.springframework.hateoas.MediaTypes.HAL_JSON;
-import javax.servlet.ServletContext;
+
 import java.util.List;
+
+import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
 @Configuration
 public class MvcConfiguration implements WebMvcConfigurer {
-
-    private final ServletContext servletContext;
-    private final ObjectMapper objectMapper;
-
-    public MvcConfiguration(ServletContext servletContext, ObjectMapper objectMapper) {
-        this.servletContext = servletContext;
-        this.objectMapper = objectMapper;
-    }
 
     @Override
     public void addViewControllers(ViewControllerRegistry registry) {
@@ -50,14 +42,4 @@ public class MvcConfiguration implements WebMvcConfigurer {
         return converter;
     }
 
-    /*@Override
-    public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-        configurer.ignoreAcceptHeader(true).defaultContentType(MediaType.TEXT_HTML);
-    }*/
-
-    /*@Bean(name = "excelViewResolver")
-    public ViewResolver getXmlViewResolver() {
-        XmlViewResolver resolver = new XmlViewResolver();
-        resolver.setLocation(new ServletContextResource(servletContext, "/WEB-INF"));
-    }*/
 }

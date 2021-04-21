@@ -1,20 +1,14 @@
 package com.blair.blairspring.configurations.datasources;
 
 import com.atomikos.jdbc.AtomikosDataSourceBean;
-import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.apache.commons.lang3.StringUtils;
 import org.h2.jdbcx.JdbcDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseBuilder;
-import org.springframework.jdbc.datasource.embedded.EmbeddedDatabaseType;
 
-import javax.sql.DataSource;
 import java.sql.SQLException;
 import java.util.Properties;
 

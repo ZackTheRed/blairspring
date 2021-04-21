@@ -4,7 +4,6 @@ import ch.qos.logback.classic.ViewStatusMessagesServlet;
 import com.blair.blairspring.controllers.EmployeeController;
 import com.blair.blairspring.controllers.NonAnnotatedController;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
@@ -15,23 +14,15 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-// @ConditionalOnMissingClass("com.blair.blairspring.controllers.EmployeeController")
-// @ConditionalOnClass(name = "com.blair.blairspring.controllers.EmployeeController")
-// @ConditionalOnClass(value = EmployeeController.class)
 @ConditionalOnBean(value = EmployeeController.class)
 @Slf4j
 public class ConditionalConfiguration {
 
-    private final String myString;
-
-    public ConditionalConfiguration(@Value("Dog") String myString) { // This is to demonstrate that no no-args constructor is necessary
-        this.myString = myString;
-    }
-
     @Bean
-    public ServletRegistrationBean viewStatusMessagesServlet() {
-        ServletRegistrationBean bean = new ServletRegistrationBean(new ViewStatusMessagesServlet(), "/lbClassicStatus");
+    public ServletRegistrationBean<ViewStatusMessagesServlet> viewStatusMessagesServlet() {
+        ServletRegistrationBean<ViewStatusMessagesServlet> bean = new ServletRegistrationBean<ViewStatusMessagesServlet>(new ViewStatusMessagesServlet(), "/lbClassicStatus");
         bean.setLoadOnStartup(1);
+        log.info("Registered ViewStatusMessagesServlet");
         return bean;
     }
 

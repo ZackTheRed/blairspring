@@ -12,7 +12,9 @@ import java.io.Serializable;
 @Getter
 @ToString
 public class AuthenticationResponse implements Serializable {
-
-    private final String jwt;
+	
+	private static final long serialVersionUID = 1L;
+	
+	private final String jwt;
 
 }

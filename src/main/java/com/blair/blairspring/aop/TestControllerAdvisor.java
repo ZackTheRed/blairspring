@@ -1,7 +1,6 @@
 package com.blair.blairspring.aop;
 
 import com.blair.blairspring.events.CustomEventPublisher;
-import com.blair.blairspring.exceptions.TestException;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.ProceedingJoinPoint;

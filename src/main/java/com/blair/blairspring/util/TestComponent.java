@@ -5,16 +5,10 @@ import lombok.Getter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.BeanFactoryAware;
-import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -34,9 +28,6 @@ public class TestComponent implements ApplicationContextAware {
 
     @Value("#{prototypeBean.myNumber}")
     private int number;
-
-    private TestComponent() {
-    }
 
     @Autowired(required = false)
     public TestComponent(GenericsBean<Integer> myGenericsBeans,

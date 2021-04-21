@@ -5,7 +5,6 @@ import org.apache.camel.test.spring.junit5.CamelSpringBootTest;
 import org.apache.camel.test.spring.junit5.CamelTestContextBootstrapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.BootstrapWith;

@@ -1,21 +1,20 @@
 package com.blair.blairspring.util;
 
-import com.blair.blairspring.model.ibatisschema.Team;
-import com.blair.blairspring.model.userschema.Role;
-import com.blair.blairspring.model.userschema.User;
-import com.blair.blairspring.repositories.userschema.RoleRepository;
-import com.blair.blairspring.services.UserService;
-import com.blair.blairspring.services.implementations.jpa.TeamService;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.util.List;
+import java.util.Set;
+
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
-import javax.annotation.PostConstruct;
-import java.util.List;
-import java.util.Set;
+import com.blair.blairspring.model.userschema.Role;
+import com.blair.blairspring.model.userschema.User;
+import com.blair.blairspring.repositories.userschema.RoleRepository;
+import com.blair.blairspring.services.UserService;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Profile("user-creator")
 @Component
@@ -26,7 +25,6 @@ public class UserCreator {
 
     private final UserService userService;
     private final RoleRepository roleRepository;
-    private final TeamService teamService;
 
     public void createUsers() {
         log.info("isActualTransactionActive: {}", TransactionSynchronizationManager.isActualTransactionActive());
@@ -38,11 +36,6 @@ public class UserCreator {
         adminRole.setRoleName("ROLE_ADMIN");
 
         List.of(userRole, testerRole, adminRole).forEach(roleRepository::save);
-
-        /*Team newTeam = new Team();
-        newTeam.setName("PAOK");
-        newTeam.setGreekName("ΠΑΟΚ");
-        teamService.create(newTeam);*/
 
         User john = new User();
         john.setUsername("john");

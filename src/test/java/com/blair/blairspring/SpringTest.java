@@ -19,9 +19,7 @@ import org.springframework.core.env.Environment;
 import org.springframework.core.env.PropertiesPropertySource;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 

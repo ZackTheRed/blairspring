@@ -3,11 +3,7 @@ package com.blair.blairspring.model.ibatisschema;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
-import net.minidev.json.annotate.JsonIgnore;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

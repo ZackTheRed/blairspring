@@ -47,7 +47,7 @@ public class DaoEndpoint implements ApplicationContextAware {
     public DaoHealth repositoryHealth(@Selector String name) {
         Map<String, Object> details = new LinkedHashMap<>();
         try {
-            JpaRepository repository = (JpaRepository) applicationContext.getBean(name);
+            JpaRepository<?, ?> repository = (JpaRepository<?, ?>) applicationContext.getBean(name);
 
             if (repository instanceof JobRepository jobRepository && jobCheck(jobRepository)) {
                 details.put("jobInit", "SUCCESSFUL");

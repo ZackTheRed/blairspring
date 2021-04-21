@@ -26,4 +26,5 @@ public class EmployeeModel extends RepresentationModel<EmployeeModel> {
         this.salary = salary;
         this.job = jobModelAssembler.toModel(job);
     }
+
 }

@@ -4,7 +4,6 @@ import com.blair.blairspring.exceptions.NotFoundException;
 import com.blair.blairspring.model.ibatisschema.Employee;
 import com.blair.blairspring.model.rowmappers.EmployeeMapper;
 import com.blair.blairspring.repositories.ibatisschema.EmployeeRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Profile;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

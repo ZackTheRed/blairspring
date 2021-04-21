@@ -1,14 +1,11 @@
 package com.blair.blairspring.model.userschema;
 
-import com.blair.blairspring.model.ibatisschema.AbstractEntity;
+import com.blair.blairspring.model.AbstractEntity;
 import com.blair.blairspring.model.validation.AdminRegistration;
 import com.blair.blairspring.model.validation.UserRegistration;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -34,7 +31,10 @@ import java.util.stream.Collectors;
 @Table(name = "users")
 @Data
 @XmlRootElement
+@EqualsAndHashCode(callSuper = true)
 public class User extends AbstractEntity implements UserDetails {
+	
+	private static final long serialVersionUID = 1L;
 
     @Column(name = "username", nullable = false, unique = true)
     @NotBlank(groups = {UserRegistration.class, AdminRegistration.class})

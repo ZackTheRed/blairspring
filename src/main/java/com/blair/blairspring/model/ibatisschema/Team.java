@@ -1,33 +1,31 @@
 package com.blair.blairspring.model.ibatisschema;
 
+import com.blair.blairspring.model.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
-import lombok.Getter;
-import org.springframework.hateoas.RepresentationModel;
+import lombok.EqualsAndHashCode;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import javax.xml.bind.annotation.XmlRootElement;
-import java.io.Serializable;
+import java.util.Set;
 
 @Entity
 @Table(name = "teams")
 @Data
-@XmlRootElement
-public class Team implements Serializable {
-
-    @Id
-    @Column(name = "id", updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EqualsAndHashCode(exclude = "players", callSuper = false)
+public class Team extends AbstractEntity {
 
     @Column(name = "name")
     private String name;
 
     @Column(name = "greek_name")
     private String greekName;
+
+    @OneToMany(mappedBy = "team", fetch = FetchType.EAGER)
+    @JsonIgnoreProperties("team")
+    private Set<Player> players;
 
 }

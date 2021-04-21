@@ -1,11 +1,5 @@
 package com.blair.blairspring.configurations;
 
-import com.blair.blairspring.util.ITestBean;
-import com.blair.blairspring.util.LazyBean;
-import com.blair.blairspring.util.SetterInjectedBean;
-import com.blair.blairspring.util.genericsbeans.GenericsBean;
-import org.springframework.boot.web.servlet.ServletRegistrationBean;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.EnableAspectJAutoProxy;
 

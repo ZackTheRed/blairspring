@@ -2,7 +2,6 @@ package com.blair.blairspring.services.implementations.entitymanager;
 
 import com.blair.blairspring.model.ibatisschema.Job;
 import com.blair.blairspring.services.JobService;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
@@ -12,7 +11,6 @@ import java.util.List;
 
 @Profile("entitymanager")
 @Service
-@Slf4j
 public class JobServiceImpl implements JobService {
 
     @PersistenceContext(unitName = "ibatisSchemaEntityManager")
@@ -25,7 +23,7 @@ public class JobServiceImpl implements JobService {
 
     @Override
     public List<Job> findAll() {
-        return entityManager.createQuery("from Job").getResultList();
+        return entityManager.createQuery("from Job", Job.class).getResultList();
     }
 
     @Override

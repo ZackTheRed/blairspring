@@ -1,13 +1,9 @@
 package com.blair.blairspring.configurations.security;
 
-import com.blair.blairspring.configurations.RestAuthenticationSuccessHandler;
-import com.blair.blairspring.services.UserService;
-import com.blair.blairspring.util.jwt.JwtRequestFilter;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.actuate.autoconfigure.security.servlet.EndpointRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -20,35 +16,24 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.AuthenticationEntryPoint;
-import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
-import org.springframework.security.web.authentication.SimpleUrlAuthenticationFailureHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import javax.servlet.http.HttpServletResponse;
+import com.blair.blairspring.services.UserService;
+import com.blair.blairspring.util.jwt.JwtRequestFilter;
 
+import lombok.RequiredArgsConstructor;
+
+@Profile("prod")
 @Configuration
 @RequiredArgsConstructor
 @EnableGlobalMethodSecurity(prePostEnabled = true, securedEnabled = true, jsr250Enabled = true)
-@Slf4j
 @EnableWebSecurity
-public class SecurityConfig extends WebSecurityConfigurerAdapter {
+public class ProdSecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final UserService userService;
     private final PasswordEncoder passwordEncoder;
-    private final RestAuthenticationSuccessHandler authenticationSuccessHandler;
     private final JwtRequestFilter jwtRequestFilter;
-
-    private final SimpleUrlAuthenticationFailureHandler authenticationFailureHandler = new SimpleUrlAuthenticationFailureHandler();
-
-    private final AccessDeniedHandler accessDeniedHandler = (request, response, accessDeniedException) -> {
-        response.getOutputStream().print("You shall not pass!");
-        response.setStatus(403);
-    };
-
-    private final AuthenticationEntryPoint restAuthenticationEntryPoint = (httpServletRequest, httpServletResponse, e) ->
-            httpServletResponse.sendError(HttpServletResponse.SC_UNAUTHORIZED);
 
     @Override
     @Bean
@@ -73,7 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().disable()
                 .cors()
                 .and()
-                //.accessDeniedHandler(accessDeniedHandler)
                 .authorizeRequests()
                 .requestMatchers(EndpointRequest.toAnyEndpoint()).hasRole("ADMIN")
                 .mvcMatchers("/", "/home").permitAll()
@@ -84,9 +68,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .exceptionHandling().authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED));
-                //.loginProcessingUrl("/login")
-                //.successHandler(authenticationSuccessHandler)
-                //.failureHandler(authenticationFailureHandler)
 
         http.headers().frameOptions().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
@@ -101,22 +82,5 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         daoAuthenticationProvider.setUserDetailsPasswordService(userService);
         return daoAuthenticationProvider;
     }
-
-    /*@Bean
-    public ApplicationListener<AuthenticationSuccessEvent> authenticationSuccessListener() {
-        return (AuthenticationSuccessEvent event) -> {
-            final Authentication auth = event.getAuthentication();
-
-            if (auth instanceof UsernamePasswordAuthenticationToken && auth.getCredentials() != null) {
-                final CharSequence clearTextPass = (CharSequence) auth.getCredentials();
-                final String newPasswordHash = passwordEncoder.encode(clearTextPass);
-                log.info("New password hash {} for user {}", newPasswordHash, auth.getName());
-                User principal = (User) auth.getPrincipal();
-                principal.setPassword(newPasswordHash);
-                userService.registerUser(principal);
-                ((UsernamePasswordAuthenticationToken) auth).eraseCredentials();
-            }
-        };
-    }*/
 
 }

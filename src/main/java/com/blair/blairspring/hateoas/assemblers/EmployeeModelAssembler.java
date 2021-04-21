@@ -3,7 +3,6 @@ package com.blair.blairspring.hateoas.assemblers;
 import com.blair.blairspring.controllers.EmployeeController;
 import com.blair.blairspring.hateoas.entitymodels.EmployeeModel;
 import com.blair.blairspring.model.ibatisschema.Employee;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.RepresentationModelAssembler;
 import org.springframework.stereotype.Component;
 
@@ -19,4 +18,5 @@ public class EmployeeModelAssembler implements RepresentationModelAssembler<Empl
                 linkTo(methodOn(EmployeeController.class).getEmployeeById(employee.getId())).withSelfRel(),
                 linkTo(methodOn(EmployeeController.class).getAllEmployees()).withRel("employees"));
     }
+
 }

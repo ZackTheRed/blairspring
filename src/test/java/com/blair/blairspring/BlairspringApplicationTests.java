@@ -1,15 +1,17 @@
 package com.blair.blairspring;
 
 import com.blair.blairspring.model.ibatisschema.Job;
+import com.blair.blairspring.model.ibatisschema.Nationality;
+import com.blair.blairspring.model.ibatisschema.Player;
+import com.blair.blairspring.repositories.ibatisschema.jpa.PlayerRepository;
 import com.blair.blairspring.util.TestComponent;
 import com.blair.blairspring.util.lookup.SingletonBean;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.exception.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +30,8 @@ import org.springframework.test.context.TestPropertySource;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.persistence.Persistence;
+import javax.persistence.PersistenceUtil;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.Map;
@@ -44,12 +48,11 @@ import static org.springframework.hateoas.MediaTypes.HAL_JSON;
 
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @Transactional
-@ActiveProfiles({"jpa", "test"})
+@ActiveProfiles({"jpa", "ibatis", "dev"})
 @TestPropertySource(properties = {"name=Kostas", "age=50"}, locations = "classpath:actuator.properties")
+@Slf4j
 class BlairspringApplicationTests {
-
-    private static final Logger logger = LoggerFactory.getLogger(BlairspringApplicationTests.class);
-
+    
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -76,6 +79,9 @@ class BlairspringApplicationTests {
     @Autowired
     private TestComponent testComponent;
 
+    @Autowired
+    private PlayerRepository playerRepository;
+
     @BeforeAll
     static void init() {
 
@@ -95,7 +101,7 @@ class BlairspringApplicationTests {
     void testGetJob() {
         String url = "http://localhost:" + randomServerPort + "/jobs/1";
         ResponseEntity<Job> responseEntity = restTemplate.getForEntity(url, Job.class);
-        logger.info("Retrieved Job: " + responseEntity.getBody().getDescription());
+        log.info("Retrieved Job: " + responseEntity.getBody().getDescription());
         //ResponseEntity<Job> jobResponseEntity = restTemplate.getForObject(url, Job.class);
     }
 
@@ -120,13 +126,11 @@ class BlairspringApplicationTests {
         assertNotNull(restTemplate.getForObject(url + "/{id}", Job.class, response.getBody().getId()));
     }
 
-    @Test
+	@Test
     void shouldReturn200WhenSendingRequestToHealthEndpoint() {
         ResponseEntity<Map> entity = restTemplate
                 .withBasicAuth("admin", "admin")
                 .getForEntity(managementUrl + "/health", Map.class);
-
-        //Map<String, String> content = (Map<String, String>) entity.getBody().get("status");
 
         assertAll(
                 () -> assertEquals(HttpStatus.OK, entity.getStatusCode())
@@ -139,7 +143,7 @@ class BlairspringApplicationTests {
         URI uri = UriComponentsBuilder.fromUriString(uriTemplate).build().toUri();
 
         ResponseEntity<String> response = restTemplate.exchange(uri, HttpMethod.GET, null, String.class);
-        logger.info("body: {}", response.getBody());
+        log.info("body: {}", response.getBody());
     }
 
     @Test
@@ -160,6 +164,17 @@ class BlairspringApplicationTests {
                 () -> assertNotNull(name),
                 () -> assertNotNull(age)
         );
-        logger.info("Name: {}, Age: {}", name, age);
+        log.info("Name: {}, Age: {}", name, age);
+    }
+
+    @Test
+    void testLazyFetch() {
+        Player player = playerRepository.findById(10L).get();
+        PersistenceUtil persistenceUtil = Persistence.getPersistenceUtil();
+        log.info("nationalities loaded: {}", persistenceUtil.isLoaded(player.getNationalities()));
+        Nationality nationality = player.getNationalities().stream().findFirst().get();
+        log.info("nationalities loaded: {}", persistenceUtil.isLoaded(player.getNationalities()));
+        log.info("nationality: {}", nationality.getName());
+        log.info("nationalities loaded: {}", persistenceUtil.isLoaded(player.getNationalities()));
     }
 }

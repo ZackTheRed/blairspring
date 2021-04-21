@@ -3,7 +3,6 @@ package com.blair.blairspring.controllers;
 import com.blair.blairspring.hateoas.assemblers.PlayerModelAssembler;
 import com.blair.blairspring.model.ibatisschema.Player;
 import com.blair.blairspring.services.implementations.jpa.PlayerService;
-import com.blair.blairspring.services.implementations.jpa.TestService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -28,7 +27,6 @@ import java.util.Optional;
 public class PlayerController {
 
     private final PlayerService playerService;
-    private final TestService testService;
     private final PlayerModelAssembler playerModelAssembler;
     private final PagedResourcesAssembler<Player> pagedResourcesAssembler;
 

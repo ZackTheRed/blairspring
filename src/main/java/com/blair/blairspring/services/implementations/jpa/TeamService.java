@@ -4,7 +4,6 @@ import com.blair.blairspring.exceptions.NotFoundException;
 import com.blair.blairspring.model.ibatisschema.Team;
 import com.blair.blairspring.repositories.ibatisschema.jpa.TeamRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;

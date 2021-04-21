@@ -2,12 +2,10 @@ package com.blair.blairspring.repositories.ibatisschema.jdbc;
 
 import com.blair.blairspring.model.ibatisschema.Job;
 import org.springframework.context.annotation.Profile;
-import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.HashMap;

@@ -1,18 +1,14 @@
 package com.blair.blairspring.model.ibatisschema;
 
+import com.blair.blairspring.model.AbstractEntity;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.hateoas.RepresentationModel;
+import org.springframework.data.rest.core.annotation.RestResource;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
@@ -24,12 +20,8 @@ import java.util.Set;
 @Entity
 @Table(name = "players")
 @Data
-public class Player extends RepresentationModel<Player> {
-
-    @Id
-    @Column(name = "id", updatable = false)
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@EqualsAndHashCode(callSuper = true)
+public class Player extends AbstractEntity {
 
     @Column(name = "first_name")
     private String firstName;
@@ -39,19 +31,20 @@ public class Player extends RepresentationModel<Player> {
 
     @ManyToOne
     @JoinColumn(name = "team_id")
+    @RestResource(rel = "his-team")
+    @JsonIgnoreProperties("players")
     private Team team;
 
-    @Column(name="birth_date")
+    @Column(name = "birth_date")
+    @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDate;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany
     @JoinTable(
             name = "player_nationalities",
             joinColumns = @JoinColumn(name = "player_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "nationality_id", referencedColumnName = "id"))
     @JsonIgnoreProperties("players")
     private Set<Nationality> nationalities;
-
-
 
 }

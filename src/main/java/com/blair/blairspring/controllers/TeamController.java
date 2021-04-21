@@ -34,7 +34,7 @@ public class TeamController {
         return ResponseEntity.ok().body(teamService.findByName(name));
     }
 
-    @GetMapping(produces = {MediaType.APPLICATION_XML_VALUE, MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping
     ResponseEntity<List<Team>> findAll() {
         log.info("Executing findAll");
         return ResponseEntity.ok().body(teamService.findAll());

@@ -1,6 +1,6 @@
 package com.blair.blairspring.repositories.ibatisschema.jpa;
 
-import com.blair.blairspring.model.ibatisschema.AbstractEntity;
+import com.blair.blairspring.model.AbstractEntity;
 
 import java.util.Optional;
 
