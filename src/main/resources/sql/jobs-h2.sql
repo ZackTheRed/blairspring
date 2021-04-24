@@ -1,0 +1,10 @@
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (1,'Java Developer','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (2,'Hairdresser','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (3,'Taxi driver','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (4,'Lorry driver','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (5,'Trainer','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (6,'Sales Executive','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (7,'Unemployed','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (8,'Policeman','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (9,'Singer','2021-03-05 22:51:31','2021-03-06 21:47:18',0);
+INSERT INTO `jobs` (`id`,`dscr`,`created_at`,`modified_at`,`version`) VALUES (10,'Porn star','2021-04-22 15:24:03',NULL,0);

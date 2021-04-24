@@ -1,3 +1,3 @@
-INSERT INTO `teams` (`greek_name`,`name`,`id`) VALUES ('ΑΕΚ','AEK Athens',1);
-INSERT INTO `teams` (`greek_name`,`name`,`id`) VALUES ('Ολυμπιακός','Olympiacos',2);
-INSERT INTO `teams` (`greek_name`,`name`,`id`) VALUES ('Παναθηναϊκός','Panathinaikos',3);
+INSERT INTO `teams` (`greek_name`,`name`,`id`,`created_at`,`modified_at`,`version`) VALUES ('ΑΕΚ','AEK Athens',1,'2021-03-05 22:53:55','2021-03-06 21:48:07',0);
+INSERT INTO `teams` (`greek_name`,`name`,`id`,`created_at`,`modified_at`,`version`) VALUES ('Ολυμπιακός','Olympiacos',2,'2021-03-05 22:53:55','2021-03-06 21:48:07',0);
+INSERT INTO `teams` (`greek_name`,`name`,`id`,`created_at`,`modified_at`,`version`) VALUES ('Παναθηναϊκός','Panathinaikos',3,'2021-03-05 22:53:55','2021-03-06 21:48:07',0);

@@ -12,4 +12,8 @@ public class NotFoundException extends RuntimeException {
         super(clazz.getSimpleName() + " with key: " + key + " does not exist!");
     }
 
+    public <T> NotFoundException(Class<T> clazz) {
+        super(clazz.getSimpleName() + " not found");
+    }
+
 }

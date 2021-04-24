@@ -1,6 +1,7 @@
 package com.blair.blairspring;
 
-import com.blair.blairspring.model.ibatisschema.Nationality;
+import com.blair.blairspring.exceptions.NotFoundException;
+import com.blair.blairspring.model.ibatisschema.Employee;
 import com.blair.blairspring.model.ibatisschema.Player;
 import com.blair.blairspring.model.ibatisschema.Team;
 import com.blair.blairspring.repositories.ibatisschema.jpa.PlayerRepository;
@@ -18,6 +19,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.Sort;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
+import org.springframework.test.context.jdbc.SqlGroup;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
@@ -26,7 +29,6 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.PersistenceUtil;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -39,11 +41,13 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @DataJpaTest
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles({"jpatests", "jpa"})
-/*@SqlGroup({
-        @Sql(scripts = {"classpath:sql/nationalities-h2.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-        @Sql(scripts = {"classpath:sql/teams-h2.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD),
-        @Sql(scripts = {"classpath:sql/players-h2.sql"}, executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
-})*/
+@SqlGroup({
+        @Sql(scripts = {"classpath:sql/nationalities-h2.sql"}),
+        @Sql(scripts = {"classpath:sql/teams-h2.sql"}),
+        @Sql(scripts = {"classpath:sql/players-h2.sql"}),
+        @Sql(scripts = {"classpath:sql/jobs-h2.sql"}),
+        @Sql(scripts = {"classpath:sql/employees-h2.sql"})
+})
 @Slf4j
 public class JpaTests {
 
@@ -68,29 +72,32 @@ public class JpaTests {
 
         persistenceUtil = Persistence.getPersistenceUtil();
 
-        Nationality greek = new Nationality();
+        /*Nationality greek = new Nationality();
         greek.setName("Greek");
         entityManager.persist(greek);
 
         Team olympiakos = new Team();
         olympiakos.setGreekName("Όλυμπιακός");
         olympiakos.setName("Olympiakos");
-        entityManager.persist(olympiakos);
 
         Player lilimpakis = new Player();
         lilimpakis.setBirthDate(LocalDate.parse("1984-12-13"));
         lilimpakis.setFirstName("Ioannis");
         lilimpakis.setLastName("Lilimpakis");
         lilimpakis.setNationalities(Set.of(greek));
-        lilimpakis.setTeam(olympiakos);
+        olympiakos.setPlayers(Set.of(lilimpakis));
 
-        entityManager.persist(lilimpakis);
+        entityManager.persist(olympiakos);*/
     }
 
     @Test
     void lilimpakisPlayerTest() {
         assertTrue(playerRepository.findAll().size() > 0);
-        Player player = playerRepository.findByFirstNameAndLastName("Ioannis", "Lilimpakis").stream().findFirst().get();
+
+        Player player = playerRepository.findByFirstNameAndLastName("Ioannis", "Lilimpakis").stream()
+                .findFirst()
+                .orElseThrow(() -> new NotFoundException(Player.class, null));
+
         log.info("Player found: {}", player);
         assertEquals(player.getLastName(), "Lilimpakis");
         entityManager.detach(player);
@@ -106,7 +113,6 @@ public class JpaTests {
         entityManager.close();
         reattachedPlayer = entityManager.merge(player);
         entityManager.persist(reattachedPlayer);
-
     }
 
     @RepeatedTest(2)
@@ -115,7 +121,7 @@ public class JpaTests {
         Player newPlayer = new Player();
         newPlayer.setFirstName("Ioannis");
         newPlayer.setLastName("Lilimpakis");
-        newPlayer.setTeam(teamRepository.findById(1L).get());
+        newPlayer.setTeam(teamRepository.findById(1L).orElse(null));
         newPlayer.setBirthDate(LocalDate.now());
         playerRepository.save(newPlayer);
     }
@@ -137,7 +143,7 @@ public class JpaTests {
         Sort sort = playerTypedSort.by(Player::getLastName).descending();
         // List<Player> players = playerRepository.findAll(Sort.by("lastName").descending());
         List<Player> players = playerRepository.findAll(sort);
-        players.stream().forEach(player -> log.info(player.getLastName()));
+        players.forEach(player -> log.info(player.getLastName()));
     }
 
     @Test
@@ -150,6 +156,25 @@ public class JpaTests {
         players = playerRepository.findAll(PageRequest.of(1, 2));
         players.stream().forEach(player -> log.info(player.getLastName()));
         */
+    }
+
+    @Test
+    void eagerLazyTest() {
+        Employee employee = entityManager.find(Employee.class, 3L);
+        log.info("Employee last name: {}", employee.getLastName());
+
+        assertTrue(persistenceUtil.isLoaded(employee.getJob()));
+
+        Long id = 1L;
+        Team team = teamRepository.findById(id).orElseThrow(() -> new NotFoundException(Team.class, id));
+        log.info("team name: {}", team.getName());
+
+        assertFalse(persistenceUtil.isLoaded(team.getPlayers()));
+
+        Player player = team.getPlayers().stream().findFirst().orElseThrow(() -> new NotFoundException(Player.class));
+        log.info("player name: {}", player.getLastName());
+        assertTrue(persistenceUtil.isLoaded(team.getPlayers()));
+
     }
 
 }
